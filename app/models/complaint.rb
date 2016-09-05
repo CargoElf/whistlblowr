@@ -38,13 +38,6 @@ class Complaint < ApplicationRecord
     end
   end
 
-  def add_allegations
-  end
-
-  def make_user
-  end
-
-
   def content_shortened
     return "#{self.content[0..30]} ..." if self.content.length>20
     return self.content
