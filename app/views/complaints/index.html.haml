@@ -13,9 +13,6 @@
       /   = select_tag "filter[allegation]", options_for_select((["All"]).concat(AllegationType.all.map{|a| a.allegation_nature}))
 
     %th Description
-    %th Complainant Name
-    %th Complainant Phone
-    %th Complainant Email
     %th Complaint Attachments
     %th Last Message
     -@complaints.each do |complaint|
@@ -26,9 +23,6 @@
             = button_to st, update_complaint_path(id: complaint.id, complaint_key: complaint.key, status: st), method:'put',form_class: "status-button", class: "btn status"
         %td= complaint.allegation_types_as_nice_string
         %td= link_to complaint.content_shortened, complaints_find_path(complaint_key: complaint.key)
-        %td= complaint.user.name
-        %td= complaint.user.phone
-        %td= complaint.user.email
         -if complaint.media[0]
           %td
             -complaint.media.each do |url|
