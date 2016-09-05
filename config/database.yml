@@ -22,8 +22,8 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
-  # <<: *default
-  # database: whistlblowr_development
+  <<: *default
+  database: whistlblowr_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -60,9 +60,9 @@ development:
 #   database: whistlblowr_test
 
 test:
-  <<: *default
-  adapter: postgresql
-  database: travis_ci_test
+  # <<: *default
+  # adapter: postgresql
+  # database: whistlblowr_test
 
 
 # As with config/secrets.yml, you never want to store sensitive information,
