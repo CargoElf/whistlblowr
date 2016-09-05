@@ -16,15 +16,34 @@ class Complaint < ApplicationRecord
     ["New", "Active", "Closed"]
   end
 
+  def possible_other_statuses #returns non-current status options
+    return Complaint.possible_statuses.reject {|st| st == self.status}
+  end
+
+  def most_recent_message
+    if self.messages.length > 1
+      return self.messages.sort{|a, b| b.created_at <=> a.created_at}[0]
+    elsif self.messages.length == 1
+      return self.messages.first
+    else
+      return nil
+    end
+  end
+
+  def most_recent_message_date
+    if self.most_recent_message
+      return self.most_recent_message.created_at
+    else
+      return ""
+    end
+  end
+
   def add_allegations
   end
 
   def make_user
   end
 
-  def possible_other_statuses #returns non-current status options
-    return Complaint.possible_statuses.reject {|st| st == self.status}
-  end
 
   def content_shortened
     return "#{self.content[0..30]} ..." if self.content.length>20

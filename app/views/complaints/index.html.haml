@@ -17,6 +17,7 @@
     %th Complainant Phone
     %th Complainant Email
     %th Complaint Attachments
+    %th Last Message
     -@complaints.each do |complaint|
       %tr{class: "table-row complaint-id-#{complaint.id} #{complaint.allegation_types_as_string} #{complaint.status}"}
         %td
@@ -36,3 +37,7 @@
                   View attachment
         -else
           %td None
+        -if complaint.messages
+          %td= complaint.most_recent_message_date.to_date
+        -else
+          %td
