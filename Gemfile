@@ -23,6 +23,7 @@ gem 'cowsay'
 gem 'haml'
 gem 'devise'
 gem 'pry'
+gem 'rubyzip'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

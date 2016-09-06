@@ -68,6 +68,19 @@ class Complaint < ApplicationRecord
     return_string
   end
 
+  def media_zip_file
+    FileUtils.mkdir("./temp")
+    self.media.urls.each do |url|
+      url.get(response_target: url)
+    end
+    Zip::File.open("/temp", Zip::File::CREATE) do |zipfile|
+      files.each do |filename|
+        zipfile.add(filename, "/temp/#{filename}")
+      end
+    end
+    "/temp.zip"
+  end
+
   private
 
   def file_size
