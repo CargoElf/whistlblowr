@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
-  devise_for :admins
-  devise_for :investigators, :path_prefix =>'auth'
+  # devise_for :admins
+  devise_for :investigators, controllers: { registrations: 'investigators/registrations'}
+
+  # get '/admins/new' => "investigators#new"
+  # scope "/admin" do
+    # resources :investigators
+  # end
 
 
   # #instructions to bypass devise ----------------------------
@@ -29,7 +34,14 @@ Rails.application.routes.draw do
   put "complaints/:id" => "complaints#update", as: "update_complaint"
 
 
+  get "/new_investigators" => "new_investigators#new"
 
+  post "/new_investigators" => "new_investigators#create"
 
+  get "/investigator_admin" => "new_investigators#new"
+
+  post "/investigator_admin" => "new_investigators#create"
+
+  put "/investigator_admin" => "new_investigators#update"
 
 end
