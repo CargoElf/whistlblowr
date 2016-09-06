@@ -1,3 +1,4 @@
+require 'zip'
 class Complaint < ApplicationRecord
   mount_uploaders :media, MediaUploader
   validates :content, presence: true
@@ -10,7 +11,6 @@ class Complaint < ApplicationRecord
   has_many :allegation_types, through: :allegations
   has_many :messages
 
-  require 'zip'
 
   def self.possible_statuses
     ["New", "Active", "Closed"]
@@ -71,13 +71,13 @@ class Complaint < ApplicationRecord
   def media_zip_file
     tempfile = Tempfile.new("media")
     self.media.each do |media|
-      tempfile << CarrierWave::Uploader::Download::RemoteFile.new(media.url)
+      tempfile << CarrierWave::Uploader::Download::RemoteFile.new(media)
       puts Cowsay.say("moo")
     end
-    io = Zip::File.open(Tempfile.new("zip_media"), Zip::File::CREATE);
-    writeEntries(tempfile, "blah", io)
-    io.close();
-    "cat"
+    # io = Zip::File.open(Tempfile.new("zip_media"), Zip::File::CREATE);
+    # writeEntries(tempfile, "blah", io)
+    # io.close();
+    # "cat"
   end
 
   private
