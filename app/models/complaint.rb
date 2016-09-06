@@ -10,7 +10,7 @@ class Complaint < ApplicationRecord
   has_many :allegation_types, through: :allegations
   has_many :messages
 
-  # POSSIBLE_STATUSES = ["New", "Active", "Closed"]
+  require 'zip'
 
   def self.possible_statuses
     ["New", "Active", "Closed"]
@@ -69,16 +69,15 @@ class Complaint < ApplicationRecord
   end
 
   def media_zip_file
-    FileUtils.mkdir("./temp")
-    self.media.urls.each do |url|
-      url.get(response_target: url)
+    tempfile = Tempfile.new("media")
+    self.media.each do |media|
+      tempfile << CarrierWave::Uploader::Download::RemoteFile.new(media.url)
+      puts Cowsay.say("moo")
     end
-    Zip::File.open("/temp", Zip::File::CREATE) do |zipfile|
-      files.each do |filename|
-        zipfile.add(filename, "/temp/#{filename}")
-      end
-    end
-    "/temp.zip"
+    io = Zip::File.open(Tempfile.new("zip_media"), Zip::File::CREATE);
+    writeEntries(tempfile, "blah", io)
+    io.close();
+    "cat"
   end
 
   private
@@ -89,6 +88,21 @@ class Complaint < ApplicationRecord
     if media_total > upload_limit.megabytes.to_f
       errors.add(:media, "You cannot upload more than #{upload_limit.to_f}MB")
     end
+  end
+
+  def writeEntries(entries, path, io)
+    entries.each { |e|
+      zipFilePath = path == "" ? e : File.join(path, e)
+      diskFilePath = File.join(@inputDir, zipFilePath)
+      puts "Deflating " + diskFilePath
+      if  File.directory?(diskFilePath)
+        io.mkdir(zipFilePath)
+        subdir =Dir.entries(diskFilePath); subdir.delete("."); subdir.delete("..")
+        writeEntries(subdir, zipFilePath, io)
+      else
+        io.get_output_stream(zipFilePath) { |f| f.puts(File.open(diskFilePath, "rb").read())}
+      end
+    }
   end
 
 end
