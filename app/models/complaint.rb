@@ -72,12 +72,15 @@ class Complaint < ApplicationRecord
     tempfile = Tempfile.new("media")
     self.media.each do |media|
       tempfile << CarrierWave::Uploader::Download::RemoteFile.new(media)
-      puts Cowsay.say("moo")
     end
-    # io = Zip::File.open(Tempfile.new("zip_media"), Zip::File::CREATE);
-    # writeEntries(tempfile, "blah", io)
-    # io.close();
-    # "cat"
+    puts Cowsay.say "**********************************************************************************"
+    p tempfile
+    Zip::File.open("complaint.zip", Zip::File::CREATE) { |zipfile|
+        zipfile.get_output_stream("media.txt") { |f| f.puts "Hello from ZipFile"}
+        zipfile.mkdir("a_dir")
+        puts Cowsay.say("moo")
+      }
+    "cat"
   end
 
   private
